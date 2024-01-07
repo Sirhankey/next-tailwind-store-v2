@@ -18,7 +18,9 @@ import Image from 'next/image';
 const Page: React.FC = () => {
   // const { user, logout } = useAuth();
   // const [errorMessage, formAction] = useFormState(logout, undefined);
-  const [user, setUser] = useState<string | null>(localStorage.getItem('email') || 'John 2');
+  const [user, setUser] = useState<string | null>(
+    typeof window !== 'undefined' ? localStorage.getItem('email') || 'John 2' : 'John 2'
+  );
   const [products, setProducts] = useState<Product[]>([]); // State for products
   const [selectedProducts, setSelectedProducts] = useState<Product | null>(null); // State for selected product
   const [globalFilter, setGlobalFilter] = useState<string | null>(null); // State for global search filter
