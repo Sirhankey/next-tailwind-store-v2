@@ -1,7 +1,7 @@
 // product-form.tsx
 import React, { useState } from 'react';
 import { useFormState } from 'react-dom';
-import { InventoryStatus, Product, ProductCategory } from '../definicoes';
+import { Inventorystatus, Product, ProductCategory } from '../definicoes';
 import { addProduct } from '../infra/produtos';
 
 interface ProductFormProps {
@@ -19,7 +19,7 @@ const initialProductState: Product = {
     quantity: 0,
     link: '',
     new: 0,
-    inventoryStatus: InventoryStatus.INSTOCK,
+    inventorystatus: Inventorystatus.INSTOCK,
 };
 
 export default function ProductForm({ hideDialog }: ProductFormProps) {

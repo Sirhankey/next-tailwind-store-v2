@@ -6,7 +6,7 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
-import { InventoryStatus, Product, ProductCategory } from '../lib/domain/definicoes';
+import { Inventorystatus, Product, ProductCategory } from '../lib/domain/definicoes';
 import { deleteProduct, getProducts } from '../lib/domain/infra/produtos';
 import { signOut } from '@/auth';
 import { useFormState } from 'react-dom';
@@ -38,7 +38,7 @@ const Page: React.FC = () => {
     quantity: 0,
     link: '',
     new: 0,
-    inventoryStatus: InventoryStatus.INSTOCK,
+    inventorystatus: Inventorystatus.INSTOCK,
   });
 
   const toast = React.useRef<any>(null);
@@ -72,7 +72,7 @@ const Page: React.FC = () => {
   //         quantity: 10,
   //         link: 'https://example.com/product1',
   //         new: 5,
-  //         inventoryStatus: InventoryStatus.INSTOCK,
+  //         inventorystatus: inventorystatus.INSTOCK,
   //       },
   //     ];
   //     setProducts(dummyProducts);

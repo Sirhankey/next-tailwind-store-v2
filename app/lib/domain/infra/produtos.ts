@@ -37,10 +37,10 @@ export async function deleteProduct(id: string): Promise<void> {
 export async function addProduct(newProduct: Product): Promise<Product> {
     try {
         const insertedProduct = await sql<Product>`
-        INSERT INTO products (name, image, description, category, price, storePrice, quantity, link, new, inventoryStatus)
+        INSERT INTO products (name, image, description, category, price, storePrice, quantity, link, new, inventorystatus)
         VALUES (${newProduct.name}, ${newProduct.image}, ${newProduct.description}, ${newProduct.category}, 
                 ${newProduct.price}, ${newProduct.storePrice}, ${newProduct.quantity}, ${newProduct.link},
-                ${newProduct.new}, ${newProduct.inventoryStatus})
+                ${newProduct.new}, ${newProduct.inventorystatus})
         RETURNING *;
       `;
         return insertedProduct.rows[0];

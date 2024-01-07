@@ -7,7 +7,6 @@ export type Usuario = {
 };
 
 export type Product = {
-    length: any;
     id: string | null;
     name: string;
     image: string | null;
@@ -18,10 +17,10 @@ export type Product = {
     quantity: number;
     link: string;
     new: number;
-    inventoryStatus: string;
+    inventorystatus: string;
 }
 
-export enum InventoryStatus {
+export enum Inventorystatus {
     INSTOCK = 'INSTOCK',
     OUTOFSTOCK = 'OUTOFSTOCK',
     RESERVED = 'RESERVED',

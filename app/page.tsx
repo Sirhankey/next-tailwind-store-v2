@@ -8,7 +8,7 @@ import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Rating } from 'primereact/rating';
 import Image from 'next/image';
-import { InventoryStatus, Product, ProductCategory } from './lib/domain/definicoes';
+import { Inventorystatus, Product, ProductCategory } from './lib/domain/definicoes';
 import { getProducts } from './lib/domain/infra/produtos';
 import 'primeicons/primeicons.css';
 import { json } from 'stream/consumers';
@@ -16,10 +16,11 @@ import { formatCurrency } from './lib/domain/infra/utils';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { Tag } from 'primereact/tag';
 
 const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<Product | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<any>(null);
   const [globalFilter, setGlobalFilter] = useState<string | null>(null);
   const [displayDialog, setDisplayDialog] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState(false);
@@ -77,6 +78,28 @@ const Home: React.FC = () => {
     );
 
   }
+
+  const statusBodyTemplate = (rowData: { inventorystatus: string; }) => {
+    console.log(JSON.stringify(rowData))
+    return <Tag value={rowData.inventorystatus} severity={getSeverity(rowData)}></Tag>;
+  };
+
+  const getSeverity = (rowData: { inventorystatus: string; }) => {
+    console.log('getSeverity', rowData.inventorystatus)
+    switch (rowData.inventorystatus) {
+      case 'INSTOCK':
+        return 'success';
+
+      case 'OUTOFSTOCK':
+        return 'warning';
+
+      case 'RESERVED':
+        return 'danger';
+
+      default:
+        return null;
+    }
+  };
 
   const handleAddToCart = () => {
     // Lógica para adicionar produtos ao carrinho
@@ -193,6 +216,7 @@ const Home: React.FC = () => {
         selection={selectedProducts}
         onSelectionChange={(e) => setSelectedProducts(e.value as Product | null)}
         dataKey="id"
+        stripedRows
         paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
@@ -205,7 +229,7 @@ const Home: React.FC = () => {
         <Column field="category" header="Category" sortable />
         <Column field="price" header="Price" body={priceBodyTemplate} sortable />
         <Column field="new" header="Novo?" body={ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
-        <Column field="inventorystatus" header="Status" />
+        <Column field="inventorystatus" body={statusBodyTemplate} header="Status" style={{ width: '20%' }}/>
       </DataTable>
 
       <Dialog
