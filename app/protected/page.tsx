@@ -7,7 +7,7 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Inventorystatus, Product, ProductCategory } from '../lib/domain/definicoes';
-import { POST, addProduct, deleteProduct, getProductById, getProductByName, getProducts } from '../lib/domain/infra/produtos';
+import { addProduct, deleteProduct, getProductById, getProductByName, getProducts } from '../lib/domain/infra/produtos';
 import { logout } from '../lib/domain/infra/usuarios';
 import Image from 'next/image';
 import 'primereact/resources/themes/saga-blue/theme.css';
