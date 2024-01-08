@@ -27,6 +27,7 @@ export async function getProducts(): Promise<Product[] | undefined> {
     try {
         const products = await sql`SELECT * FROM products`;
         const productsList = products.rows as Product[];
+        console.log('RETORNO CONSULTA PRODUCTS',productsList)
         return productsList;
     } catch (erro) {
         console.error('Erro na consulta de product:', erro);

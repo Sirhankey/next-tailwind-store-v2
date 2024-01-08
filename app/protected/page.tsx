@@ -4,7 +4,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Inventorystatus, Product, ProductCategory } from '../lib/domain/definicoes';
 import { addProduct, deleteProduct, getProductById, getProductByName, getProducts } from '../lib/domain/infra/produtos';
@@ -19,6 +18,8 @@ import { classNames } from 'primereact/utils';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Page: React.FC = () => {
   // const [errorMessage, formAction] = useFormState(logout, undefined);
@@ -33,6 +34,8 @@ const Page: React.FC = () => {
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const dt = useRef(null);
   const [productDialog, setProductDialog] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [position, setPosition] = useState('center');
 
   const [product, setProduct] = useState<Product>({
     id: null,
@@ -47,8 +50,6 @@ const Page: React.FC = () => {
     new: 5,
     inventorystatus: 'INSTOCK',
   });
-
-  const toast = React.useRef<any>(null);
 
 
   useEffect(() => {
@@ -129,12 +130,36 @@ const Page: React.FC = () => {
     }
   };
 
-  const handleDeleteProduct = (product: Product) => {
-    if (product.id) {
-      deleteProduct(product.id).then(() => {
-        setProducts(products.filter((p) => p.id !== product.id));
-        return alert('Produto deletado com sucesso.');
 
+  // const confirmDelete = (productId: string) => {
+
+  //   toast("Hello coders it was easy!");
+  //   toast.info('Você tem certeza que deseja deletar esse produto?', {
+  //     position: toast.POSITION.TOP_CENTER,
+  //     autoClose: false,
+  //     closeButton: false,
+  //     closeOnClick: false,
+  //     draggable: false,
+  //     progress: undefined,
+  //     onClick: () => {
+  //       toast.dismiss();
+  //       handleDeleteProduct(productId); // Chama a função para deletar o produto
+  //     },
+  //   });
+  // };
+
+  const handleDeleteProduct = (productId: string, position: string) => {
+    console.log('handleDeleteProduct', productId)
+    if (productId) {
+      alert('começando delete');
+      deleteProduct(productId).then(() => {
+        setProducts(products.filter((p) => p.id !== productId));
+        alert('Produto deletado com sucesso.');
+        return Promise.resolve('Produto deletado com sucesso.');
+      }).catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setProductDialog(false);
       });
     }
   };
@@ -155,6 +180,11 @@ const Page: React.FC = () => {
       [`${name}`]: val
     };
     setProduct(_product);
+  }
+
+  const openDialog = (open:boolean, position: string) => {
+    setPosition(position);
+    setVisible(open);
   }
 
 
@@ -197,6 +227,14 @@ const Page: React.FC = () => {
     }
   }
 
+  const footerContent = (
+    <div>
+      <Button label="No" icon="pi pi-times" onClick={() => setVisible(false)} className="p-button-text" />
+      <Button label="Yes" icon="pi pi-check" onClick={() => setVisible(false)} autoFocus />
+    </div>
+  );
+
+
   const productDialogFooter = (
     <div className='flex justify-between gap-4 p-5'>
       <React.Fragment>
@@ -218,8 +256,6 @@ const Page: React.FC = () => {
       </span>
       <div className="mt-3 md:mt-0 flex justify-end items-center">
         <Button icon="pi pi-plus" className="m-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={openNew} tooltip="Novo" tooltipOptions={{ position: 'bottom' }} />
-        <Button icon="pi pi-trash" className="p-button-danger mr-2 p-button-rounded" onClick={confirmDeleteSelected} disabled={!selectedProducts} tooltip="Delete" tooltipOptions={{ position: 'bottom' }} />
-        {/* <Button icon="pi pi-upload" className="p-button-help p-button-rounded" onClick={exportCSV} tooltip="Export" tooltipOptions={{ position: 'bottom' }} /> */}
       </div>
     </div>
   );
@@ -227,7 +263,7 @@ const Page: React.FC = () => {
 
   return (
     <div className="row">
-      <Toast ref={toast} content />
+      {/* <toast ref={toast} content /> */}
 
       <div className="flex justify-between mb-3 md:items-center ml-5">
         <h1 className="text-2xl font-bold">Venda de Garagem!</h1>
@@ -260,15 +296,15 @@ const Page: React.FC = () => {
         <Column
           body={(rowData) => (
             <div>
-              <Button
+              {/* <Button
                 icon="pi pi-pencil"
                 className="p-button-rounded p-button-success p-mr-2"
                 onClick={() => onProductSelect(rowData)}
-              />
+              /> */}
               <Button
                 icon="pi pi-trash"
                 className="p-button-rounded p-button-danger"
-                onClick={() => deleteProduct(rowData.id)}
+                onClick={() => handleDeleteProduct(rowData.id, 'top')}
               />
             </div>
           )}
@@ -348,6 +384,31 @@ const Page: React.FC = () => {
           </div>
         }
       ></Dialog>
+
+      {/* Delete Products Dialog */}
+      <Dialog
+        header="Header"
+        visible={visible}
+        position={"top"}
+        style={{ width: '25vw', height: '15vh', padding: '1px' }}
+        onHide={() => setVisible(false)}
+        // footer={footerContent}
+        draggable={false}
+        resizable={false}
+        content={
+          <div className='flex-col items-center justify-center w-full h-full gap-4 gap-y-2 bg-zinc-300 p-4'>
+            <p className="m-0">
+              Tem certeza que deseja deletar esse produto?
+            </p>
+            <div className='flex items-center align-middle justify-center mt-5'>
+              {footerContent}
+
+            </div>
+          </div>
+        }>
+
+      </Dialog>
+      {/* <ToastContainer /> */}
 
     </div >
   );
