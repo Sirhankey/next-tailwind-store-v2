@@ -17,6 +17,7 @@
     "primereact": "^10.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-responsive": "^9.0.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
