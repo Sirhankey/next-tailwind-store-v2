@@ -8,15 +8,15 @@ import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Rating } from 'primereact/rating';
 import Image from 'next/image';
-import { Inventorystatus, Product, ProductCategory } from './lib/domain/definicoes';
+import { Product } from './lib/domain/definicoes';
 import { getProducts } from './lib/domain/infra/produtos';
-import 'primeicons/primeicons.css';
-import { json } from 'stream/consumers';
 import { formatCurrency } from './lib/domain/infra/utils';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 import { Tag } from 'primereact/tag';
+import Link from 'next/link';
+import { useMediaQuery } from 'react-responsive';
 
 const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,6 +25,7 @@ const Home: React.FC = () => {
   const [displayDialog, setDisplayDialog] = useState<boolean>(false);
   const [submitted, setSubmitted] = useState(false);
   const dt = useRef(null);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const toast = React.useRef<any>(null);
 
@@ -144,7 +145,6 @@ const Home: React.FC = () => {
   );
 
 
-
   const ratingBodyTemplate = (rowData: { new: number | undefined; }) => {
     return <Rating value={rowData.new} readOnly cancel={false} />;
   }
@@ -197,15 +197,28 @@ const Home: React.FC = () => {
   return (
     <div className="p-4 border-round shadow-2">
       <Toast ref={toast} content />
-
       <div className="flex justify-between mb-3 md:items-center ml-5">
-        <h1 className="text-3xl text-800 font-bold mb-4">Venda de Garagem!</h1>
-        <Button
-          icon="pi pi-shopping-cart"
-          label={`Adicionar ao Carrinho (${selectedProducts?.length || 0})`}
-          onClick={handleAddToCart}
-          className="p-button-rounded p-button-primary"
-        />
+
+        <div>
+          <h1 className="text-3xl text-800 font-bold mb-4">Venda de Garagem!</h1>
+        </div>
+
+        <div>
+          <Button
+            icon="pi pi-sign-in mr-2"
+            className="p-button-rounded p-button-primary"
+          >
+            <Link href="/login">
+              Login
+            </Link>
+          </Button>
+          <Button
+            icon="pi pi-shopping-cart"
+            label={isMobile ? `${selectedProducts?.length || 0}` : `Adicionar ao Carrinho (${selectedProducts?.length || 0})`}
+            onClick={handleAddToCart}
+            className="p-button-rounded p-button-primary ml-4"
+          />
+        </div>
       </div>
 
       <DataTable
@@ -229,7 +242,7 @@ const Home: React.FC = () => {
         <Column field="category" header="Category" sortable />
         <Column field="price" header="Price" body={priceBodyTemplate} sortable />
         <Column field="new" header="Novo?" body={ratingBodyTemplate} sortable style={{ minWidth: '12rem' }}></Column>
-        <Column field="inventorystatus" body={statusBodyTemplate} header="Status" style={{ width: '20%' }}/>
+        <Column field="inventorystatus" body={statusBodyTemplate} header="Status" style={{ width: '20%' }} />
       </DataTable>
 
       <Dialog
