@@ -3,10 +3,19 @@
 import { sql } from '@vercel/postgres';
 import { Product, Usuario } from '../definicoes';
 
-
 export async function getProductById(id: string): Promise<Product | undefined> {
     try {
         const product = await sql<Product>`SELECT * FROM products WHERE id=${id}`;
+        return product.rows[0];
+    } catch (erro) {
+        console.error('Erro na consulta de product:', erro);
+        throw new Error('Erro na consulta de product.');
+    }
+}
+
+export async function getProductByName(name: string): Promise<Product | undefined> {
+    try {
+        const product = await sql<Product>`SELECT * FROM products WHERE name =${name}`;
         return product.rows[0];
     } catch (erro) {
         console.error('Erro na consulta de product:', erro);
@@ -36,16 +45,18 @@ export async function deleteProduct(id: string): Promise<void> {
 
 export async function addProduct(newProduct: Product): Promise<Product> {
     try {
-        const insertedProduct = await sql<Product>`
-        INSERT INTO products (name, image, description, category, price, storePrice, quantity, link, new, inventorystatus)
-        VALUES (${newProduct.name}, ${newProduct.image}, ${newProduct.description}, ${newProduct.category}, 
-                ${newProduct.price}, ${newProduct.storePrice}, ${newProduct.quantity}, ${newProduct.link},
-                ${newProduct.new}, ${newProduct.inventorystatus})
-        RETURNING *;
-      `;
-        return insertedProduct.rows[0];
-    } catch (error) {
-        console.error('Erro ao inserir produto:', error);
-        throw new Error('Erro ao inserir produto.');
+        const product = await sql<Product>`
+        INSERT INTO products 
+        (name, image, description, category, price, storePrice, quantity, link, new, 
+            inventorystatus) VALUES 
+            (${newProduct.name}, ${newProduct.image}, ${newProduct.description}, 
+                ${newProduct.category}, ${newProduct.price}, ${newProduct.storePrice}, 
+                ${newProduct.quantity}, ${newProduct.link}, ${newProduct.new}, 
+                ${newProduct.inventorystatus});`;
+        return product.rows[0];
+    } catch (erro) {
+        console.error('Erro na consulta de product:', erro);
+        throw new Error('Erro na consulta de product.');
     }
+
 }
